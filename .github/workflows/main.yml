@@ -3,7 +3,7 @@ name: "采集火烧云预测&通知"
 on: 
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
   schedule:
-    - cron: '5 10,14,21 * * *' At minute 5 past hour 10, 14, and 21.
+    - cron: '5 10,14,21 * * *' #At minute 5 past hour 10, 14, and 21.
 
 permissions: write-all # {{secrets.GITHUB_TOKEN}}的权限
 
