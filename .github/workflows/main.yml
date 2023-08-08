@@ -3,7 +3,7 @@ name: "采集火烧云预测&通知"
 on: workflow_dispatch
 permissions: write-all
 jobs:
-  采集-通知-更新:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: 检查分支
