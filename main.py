@@ -9,7 +9,9 @@ def copy_record():
 
 
 def notify():
+    print("推送通知")
     pass
 
 if __name__ == "__main__":
     copy_record()
+    notify()
