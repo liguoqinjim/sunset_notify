@@ -1,9 +1,7 @@
 name: "采集火烧云预测&通知"
 # run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-
-permissions: read-all|write-all
-
 on: workflow_dispatch
+permissions: "read-all|write-all"
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
