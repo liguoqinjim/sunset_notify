@@ -11,20 +11,23 @@ old_filepath = "records/7612166895.json"
 def get_new_content():
     with open(new_filepath, "r", encoding="utf-8") as f:
         data = json.load(f)
-    print(data['weibo'])
 
     # data['weibo']转为dataframe
-    df = pd.DataFrame(data['weibo'])
-    df.drop(columns=['user_id','screen_name','source','comments_count','reposts_count','topics','at_users','created_at','article_url','video_url','attitudes_count','bid','location'],inplace=True)
-    print(df)
-    print(df.columns)
-    df = df[['id', 'text', 'full_created_at']]
+    df_new = pd.DataFrame(data['weibo'])
+    df_new.drop(columns=['user_id','screen_name','source','comments_count','reposts_count','topics','at_users','created_at','article_url','video_url','attitudes_count','bid','location'],inplace=True)
+    df_new = df_new[['id', 'full_created_at', 'text']]
+    # df_new['full_created_at'] = pd.to_datetime(df_new['full_created_at'])
 
-    # dataframe转为json数组
-    df_json = df.to_json(orient='records', force_ascii=False, indent=4)
+    # with open(old_filepath, "r", encoding="utf-8") as f:
+    #     data_old = json.load(f)
+    # print(data_old)
+    # df_old = pd.DataFrame(data_old)
+    # print(df_old)
 
     # 写入文件
     with open(old_filepath, "w", encoding="utf-8") as f:
+        # dataframe转为json数组
+        df_json = df_new.to_json(orient='records', force_ascii=False, indent=4)
         f.write(df_json)
 
 def copy_record():
