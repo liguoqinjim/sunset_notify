@@ -9,6 +9,13 @@ jobs:
       - name: 检查分支
         uses: actions/checkout@v3
 
+      - name: 设置时区
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: "Asia/Shanghai"
+          timezoneMacos: "Asia/Shanghai"
+          timezoneWindows: "Shanghai Standard Time"
+
       - name: 安装python
         uses: actions/setup-python@v4
         with:
@@ -16,6 +23,9 @@ jobs:
 
       - name: 安装依赖
         run: pip install -r requirements.txt
+
+      - name: 修改日期
+        run: python change_date.py
 
       - name: 采集微博
         run: python crawler/weibo.py

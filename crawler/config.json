@@ -6,7 +6,7 @@
     "since_date": "2023-08-08",
     "start_page": 1,
     "write_mode": [
-        "csv"
+        "json"
     ],
     "original_pic_download": 0,
     "retweet_pic_download": 0,
