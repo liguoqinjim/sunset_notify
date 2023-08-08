@@ -39,13 +39,19 @@ jobs:
         env:
           WX_TOKEN: ${{ secrets.WX_TOKEN }}
         run: python main.py "$WX_TOKEN"
+      
+      - name: 判断是否有修改
+        id: verify_diff
+        run: |
+          git diff --quiet records/*.json || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Commit files
+        if: steps.verify_diff.outputs.changed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add records/*.json
-          git commit -m "Add changes"
+          git commit -m "预测记录更新"
 
       - name: 推送记录到github
         uses: ad-m/github-push-action@master
