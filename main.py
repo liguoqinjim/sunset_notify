@@ -1,4 +1,6 @@
+import sys
 import shutil
+from utils import send_msg_q_wechat
 
 def copy_record():
     # 复制文件到指定路径
@@ -8,11 +10,13 @@ def copy_record():
 
     shutil.copy(filepath, new_dir)
 
-
-def notify():
-    print("推送通知")
-    pass
+def notify(hook_url):
+    send_msg_q_wechat(hook_url, "火烧云预测结果已更新")
 
 if __name__ == "__main__":
-    copy_record()
-    notify()
+    # 读取命令行参数
+    wx_token = sys.argv[1]
+    hook_url = f"https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={wx_token}"
+
+    # copy_record()
+    notify(hook_url)

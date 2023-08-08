@@ -1,6 +1,8 @@
 name: "采集火烧云预测&通知"
 # run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 
+permissions: read-all|write-all
+
 on: workflow_dispatch
 jobs:
   Explore-GitHub-Actions:
@@ -21,7 +23,9 @@ jobs:
         run: python crawler/weibo.py
 
       - name: 复制记录&通知
-        run: python main.py
+        env:
+          WX_TOKEN: ${{ secrets.WX_TOKEN }}
+        run: python main.py "$WX_TOKEN"
 
       - name: Commit files
         run: |
