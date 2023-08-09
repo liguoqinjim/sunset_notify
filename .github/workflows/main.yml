@@ -4,7 +4,7 @@ on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
   schedule:
     # - cron: '5 10,14,21 * * *' #At minute 5 past hour 10, 14, and 21.
-    - cron: '5 2,6,13 * * *' #github action的时区不是北京时间，所有都减去8
+    - cron: '30 2,6,13 * * *' #github action的时区不是北京时间，所有都减去8
 
 permissions: write-all # {{secrets.GITHUB_TOKEN}}的权限
 
@@ -24,6 +24,9 @@ jobs:
           timezoneLinux: "Asia/Shanghai"
           timezoneMacos: "Asia/Shanghai"
           timezoneWindows: "Shanghai Standard Time"
+
+      - name: 打印当前时间
+        run: date
 
       - name: 安装python
         uses: actions/setup-python@v4
