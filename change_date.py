@@ -1,5 +1,5 @@
 import json
-from datetime import date
+from datetime import date,timedelta
 
 def change_since_date():
     filepath = "crawler/config.json"
@@ -9,7 +9,9 @@ def change_since_date():
         config = json.load(f)
     
     # Update the since_date field with today's date
-    config['since_date'] = date.today().strftime('%Y-%m-%d')
+    # 获得昨天的日期
+    yesterday = date.today() - timedelta(days=1)
+    config['since_date'] = yesterday.strftime('%Y-%m-%d')
     
     # Write the updated config file
     with open(filepath, 'w') as f:

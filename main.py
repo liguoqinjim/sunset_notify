@@ -1,4 +1,5 @@
 import sys
+import os
 import shutil
 import pandas as pd
 import json
@@ -12,6 +13,11 @@ new_filepath = "crawler/weibo/上海火烧云预测bot/7612166895.json"
 old_filepath = "records/7612166895.json"
 
 def get_new_content():
+    # 判断new_filepath是否存在
+    if not os.path.exists(new_filepath):
+        print("目前还没有数据")
+        return
+
     with open(new_filepath, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -68,10 +74,8 @@ def notify(content):
 
 if __name__ == "__main__":
     get_new_content()
-    exit()
 
+    # exit()
     # 读取命令行参数
-
-
     # copy_record()
-    notify(hook_url)
+    # notify(hook_url)
