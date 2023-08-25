@@ -5,8 +5,10 @@ import pandas as pd
 import json
 
 from utils import send_msg_q_wechat
+from sun import get_sun_time
 
 wx_token = sys.argv[1]
+weather_api_key = sys.argv[2]
 hook_url = f"https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={wx_token}"
 
 new_filepath = "crawler/weibo/上海火烧云预测bot/7612166895.json"
@@ -55,15 +57,18 @@ def get_new_content():
         for i, row in df_content.iterrows():
             content += f"第{i+1}条: {row['full_created_at']}" + "\n" + row['text'] + "\n"
 
+        # 获取日出日落时间
+        content += get_sun_time(weather_api_key)
+
         notify(content)
 
+        # 写入文件
         with open(old_filepath, "w", encoding="utf-8") as f:
             f.write(df.to_json(orient='records', force_ascii=False, indent=4))
     else:
         print("无新内容")
 
 
-    # 写入文件
     
 
 def copy_record():

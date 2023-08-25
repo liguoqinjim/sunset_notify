@@ -44,8 +44,9 @@ jobs:
 
       - name: 复制记录&通知
         env:
-          WX_TOKEN: ${{ secrets.WX_TOKEN }}
-        run: python main.py "$WX_TOKEN"
+          WX_TOKEN: ${{ secrets.WX_TOKEN }} # 微信通知token
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }} # 天气api key
+        run: python main.py "$WX_TOKEN" "$WEATHER_API_KEY"
       
       - name: 判断是否有修改
         id: verify_diff
