@@ -162,3 +162,4 @@ cython_debug/
 js.json
 crawler/weibo
 log
+v2/temp

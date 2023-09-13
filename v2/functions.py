@@ -3,6 +3,8 @@ import json
 import traceback
 import requests
 import os
+import base64
+import urllib
 
 def send_msg_q_wechat(hook_url,content):
     try:
@@ -135,3 +137,27 @@ def download_sunset_image(rise=True,save_dir="temp"):
 
     with open(_filepath, "wb") as f:
         f.write(response.content)
+
+def split_image(image_filepath):
+    """
+    切割图片
+    """
+    # 读取图片
+    from PIL import Image
+    im = Image.open(image_filepath)
+    # 获取图片的宽度和高度
+    img_size = im.size
+    print(img_size)
+
+    # (1385,400-78)  到(1626,652-78)
+    xy1 = (1385,400-78)
+    xy2 = (1626,652-78)
+    # 切割图片
+    region = im.crop(xy1 + xy2)
+
+    # 保存图片，在文件名后面加一个split，需要加载后缀名的前面
+    _filepath = image_filepath.split(".")
+    _filepath = _filepath[0] + "_split." + _filepath[1]
+    region.save(_filepath)
+
+    return _filepath
