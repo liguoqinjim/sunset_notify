@@ -36,6 +36,12 @@ jobs:
         with:
           python-version: '3.10'  
 
+      - name: 设置环境变量
+        env:
+          OPENAI_API_BASE: ${{ vars.OPENAI_API_BASE }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} 
+        run: echo "FOO=$OPENAI_API_KEY" >> $GITHUB_ENV
+
       - name: 安装依赖
         run: pip install -r requirements.txt
 
