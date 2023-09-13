@@ -49,13 +49,24 @@ def split_image():
     region = im.crop(xy1 + xy2)
     # 保存图片
     region.save("test2.png")
-    
+
+def compress_image():
+    """
+    压缩图片质量，降低图片的占用空间
+    """
+    from PIL import Image
+    im = Image.open("test.png")
+    # im.save("test_compressed.png", format='png', optimize=True, quality=50)
+    im.save("test_compressed.webp", format='webp', quality=10, lossless=True)
+
 def baidu_ocr():
     """
     百度OCR识别图片
     """
 
+
 if __name__ == '__main__':
     # download_png()
     # split_image()
-    baidu_ocr()
+    # baidu_ocr()
+    compress_image()
