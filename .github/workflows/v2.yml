@@ -45,12 +45,15 @@ jobs:
           echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> $GITHUB_ENV
 
       - name: 打印当前目录
+        working-directory: ./v2
         run: pwd
 
       - name: 安装依赖
+        working-directory: ./v2
         run: pip install -r requirements.txt
 
       - name: 采集&通知
+        working-directory: ./v2
         env:
           BAIDU_API_KEY: ${{ secrets.BAIDU_API_KEY }} # 百度api key
           BAIDU_SECRET_KEY: ${{ secrets.BAIDU_SECRET_KEY }} # 百度secret key
