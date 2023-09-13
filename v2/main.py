@@ -68,9 +68,10 @@ def process_report(report_rise, report_set):
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    json_path = os.path.join(save_dir, f"{report_rise['date']}.json")
+    # 保存json, 以系统日期命名，格式"20230913_2239.json"
+    json_path = os.path.join(save_dir, f"{datetime.now().strftime('%Y%m%d_%H%M')}.json")
     with open(json_path, "w") as f:
-        json.dump(reports, f, ensure_ascii=False)
+        json.dump(reports, f, ensure_ascii=False, indent=4)
 
     # 对reports排序，按照日期、时间排序
     reports = sorted(reports, key=lambda x: (x["date"], x["time"]))
@@ -89,9 +90,9 @@ def run():
     获得火烧云数据
     """
     # 下载日落日出图片
-    # img_rise = download_sunset_image(rise=True,save_dir="temp")
-    # time.sleep(3)
-    # img_set = download_sunset_image(rise=False,save_dir="temp")
+    img_rise = download_sunset_image(rise=True,save_dir="temp")
+    time.sleep(3)
+    img_set = download_sunset_image(rise=False,save_dir="temp")
 
     img_rise = "temp/rise.png"
     img_set = "temp/set.png"
@@ -100,8 +101,8 @@ def run():
 
     # 处理图片
     report_rise = process_image(img_rise)
-    # report_set = process_image(img_set)
-    report_set = report_rise  # 调试
+    report_set = process_image(img_set)
+    # report_set = report_rise  # 调试
 
     # 处理结果
     process_report(report_rise, report_set)
