@@ -2,9 +2,9 @@ name: "采集火烧云预测&通知"
 # run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: 
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
-  schedule:
+  # schedule:
     # - cron: '5 10,14,21 * * *' #At minute 5 past hour 10, 14, and 21.
-    - cron: '30 2,6,13 * * *' #github action的时区不是北京时间，所有都减去8
+    # - cron: '30 2,6,13 * * *' #github action的时区不是北京时间，所有都减去8
 
 permissions: write-all # {{secrets.GITHUB_TOKEN}}的权限
 
