@@ -147,6 +147,7 @@ def download_sunset_image(rise=True, save_dir="temp"):
     with open(_filepath, "wb") as f:
         f.write(response.content)
 
+    return _filepath
 
 def split_image(image_filepath):
     """
