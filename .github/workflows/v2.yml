@@ -1,4 +1,4 @@
-name: "采集火烧云预测&通知v1"
+name: "采集火烧云预测&通知v2"
 # run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: 
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
@@ -29,7 +29,7 @@ jobs:
         run: date
 
       - name: 进入目录
-        run: cd v1
+        run: cd v2
 
       - name: 安装python
         uses: actions/setup-python@v4
@@ -39,17 +39,13 @@ jobs:
       - name: 安装依赖
         run: pip install -r requirements.txt
 
-      - name: 修改日期
-        run: python change_date.py
-
-      - name: 采集微博
-        run: python crawler/weibo.py
-
-      - name: 复制记录&通知
+      - name: 采集&通知
         env:
+          BAIDU_API_KEY: ${{ secrets.BAIDU_API_KEY }} # 百度api key
+          BAIDU_SECRET_KEY: ${{ secrets.BAIDU_SECRET_KEY }} # 百度secret key
           WX_TOKEN: ${{ secrets.WX_TOKEN }} # 微信通知token
-          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }} # 天气api key
-        run: python main.py "$WX_TOKEN" "$WEATHER_API_KEY"
+          # WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }} # 天气api key
+        run: python main.py "$BAIDU_API_KEY" "$BAIDU_SECRET_KEY" "$WX_TOKEN"
       
       - name: 判断是否有修改
         id: verify_diff
