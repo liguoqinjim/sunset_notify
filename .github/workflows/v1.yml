@@ -28,24 +28,25 @@ jobs:
       - name: 打印当前时间
         run: date
 
-      - name: 进入目录
-        run: cd v1
-
       - name: 安装python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'  
 
       - name: 安装依赖
+        working-directory: ./v1
         run: pip install -r requirements.txt
 
       - name: 修改日期
+        working-directory: ./v1
         run: python change_date.py
 
       - name: 采集微博
+        working-directory: ./v1
         run: python crawler/weibo.py
 
       - name: 复制记录&通知
+        working-directory: ./v1
         env:
           WX_TOKEN: ${{ secrets.WX_TOKEN }} # 微信通知token
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }} # 天气api key
@@ -53,10 +54,12 @@ jobs:
       
       - name: 判断是否有修改
         id: verify_diff
+        working-directory: ./v1
         run: |
           git diff --quiet records/*.json || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Commit files
+        working-directory: ./v1
         if: steps.verify_diff.outputs.changed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"

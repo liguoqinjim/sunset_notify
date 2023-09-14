@@ -3,8 +3,8 @@ name: "采集火烧云预测&通知v2"
 on: 
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
   # schedule:
-    # - cron: '5 10,14,21 * * *' #At minute 5 past hour 10, 14, and 21.
-    # - cron: '30 2,6,13 * * *' #github action的时区不是北京时间，所有都减去8
+    # 每天更新两次，分别在8:30-10:30以及20:30-22:30更新
+    - cron: '0 3,15 * * *' #github action的时区不是北京时间，所有都减去8
 
 permissions: write-all # {{secrets.GITHUB_TOKEN}}的权限
 
@@ -27,9 +27,6 @@ jobs:
 
       - name: 打印当前时间
         run: date
-
-      - name: 进入目录
-        run: cd v2
 
       - name: 安装python
         uses: actions/setup-python@v4
@@ -62,16 +59,19 @@ jobs:
         run: python main.py "$BAIDU_API_KEY" "$BAIDU_SECRET_KEY" "$WX_TOKEN"
       
       - name: 判断是否有修改
+        working-directory: ./v2
         id: verify_diff
         run: |
-          git diff --quiet records/*.json || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --quiet records || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Commit files
+        working-directory: ./v2
         if: steps.verify_diff.outputs.changed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add records/*.json
+          git add records/images/*.webp
+          git add records/json/*.json
           git commit -m "预测记录更新"
 
       - name: 推送记录到github
