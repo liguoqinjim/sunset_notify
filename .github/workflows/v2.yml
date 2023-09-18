@@ -63,7 +63,12 @@ jobs:
         id: verify_diff
         run: |
           pwd
-          ls -al recoreds
+          echo "01"
+          ls -al records
+          echo "02"
+          ls -al records/images
+          echo "03"
+          ls -al records/json
           git diff --quiet records
           git diff --quiet records/images
           git diff --quiet records/json
