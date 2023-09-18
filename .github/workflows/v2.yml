@@ -62,6 +62,8 @@ jobs:
         working-directory: ./v2
         id: verify_diff
         run: |
+          pwd
+          ls -al recoreds
           git diff --quiet records
           git diff --quiet records/images
           git diff --quiet records/json
