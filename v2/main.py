@@ -28,12 +28,11 @@ def process_image(img_path):
 
     # 调用llm
     report = get_llm_quality_report(ocr_content)
-    print("report:", report)
 
     # report转为dict
     report_dict = report.dict()
     report_dict["origin"] = ocr_content
-    print(report_dict)
+    print("report=",report_dict)
 
     if "rise" in img_path:
         assert report_dict["phase"] == "日出"
