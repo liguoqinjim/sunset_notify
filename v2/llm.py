@@ -63,5 +63,9 @@ def get_llm_quality_report(ocr_content):
     print(output)
     print("output-----------------end")
 
-    report = parser.parse(output)
-    return report
+    try:
+        report = parser.parse(output)
+        return report
+    except Exception as e:
+        print("parse error:",e)
+        raise e
