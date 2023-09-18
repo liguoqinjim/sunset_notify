@@ -72,7 +72,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add records/images/*.webp
           git add records/json/*.json
-          git commit -m "预测记录更新"
+          git commit -m "预测记录更新v2"
 
       - name: 推送记录到github
         uses: ad-m/github-push-action@master
