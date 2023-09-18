@@ -62,6 +62,7 @@ jobs:
         working-directory: ./v2
         id: verify_diff
         # git diff --quiet records || echo "changed=true" >> $GITHUB_OUTPUT
+        # git diff只对git add之后的文件有效
         run: |
           if git status --porcelain records/ | grep "^??" > /dev/null; then
             echo "changed=true" >> $GITHUB_OUTPUT
