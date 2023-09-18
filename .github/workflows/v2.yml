@@ -61,8 +61,11 @@ jobs:
       - name: 判断是否有修改
         working-directory: ./v2
         id: verify_diff
+        # git diff --quiet records || echo "changed=true" >> $GITHUB_OUTPUT
         run: |
-          git diff --quiet records || echo "changed=true" >> $GITHUB_OUTPUT
+          if git status --porcelain records/ | grep "^??" > /dev/null; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Commit files
         working-directory: ./v2
