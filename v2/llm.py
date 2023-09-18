@@ -5,6 +5,7 @@ from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field, validator,constr,ValidationError
 from typing import List
 from enum import Enum
+from langchain.chat_models import ChatOpenAI
 
 class PhaseEnum(str, Enum):
     sunset = "日落"
@@ -46,14 +47,16 @@ def get_llm_quality_report(ocr_content):
     2以上：不仅质量好且持续时间很长
     ```
 
-    请你总结火烧云质量以及根据时间判断是日出还是日落。{format_instructions}。
-    Let's think step by step, and output in chinese"""
+    请你总结火烧云质量以及根据时间判断是日出还是日落。
+    Let's think step by step, and output in chinese.
+    {format_instructions}。"""
 
     # prompt = PromptTemplate(template=template, input_variables=["report"])
     parser = PydanticOutputParser(pydantic_object=SunsetReport)
     prompt = PromptTemplate(template=template, input_variables=["report"], partial_variables={"format_instructions": parser.get_format_instructions()})
 
-    llm = OpenAI(temperature=0,model_name='gpt-3.5-turbo-0613')
+    # llm = OpenAI(temperature=0,model_name='gpt-3.5-turbo-0613')
+    llm = ChatOpenAI(temperature=0, model_name='gpt-3.5-turbo')
     llm_chain = LLMChain(prompt=prompt, llm=llm)
 
     report = ocr_content
