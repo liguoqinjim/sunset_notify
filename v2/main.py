@@ -23,11 +23,11 @@ def process_image(img_path):
 
     # 调用百度OCR识别图片
     ocr_content = baidu_ocr(img_split_path, baidu_ocr_api_key, baidu_ocr_secret_key)
-    print("ocr_content:", ocr_content)
+    print("ocr_content:---------------\n", ocr_content)
+    print("ocr_content:---------------")
 
     # 调用llm
     report = get_llm_quality_report(ocr_content)
-    # report['origin'] = ocr_content
     print("report:", report)
 
     # report转为dict
@@ -94,15 +94,12 @@ def run():
     time.sleep(3)
     img_set = download_sunset_image(rise=False,save_dir="temp")
 
-    img_rise = "temp/rise.png"
-    img_set = "temp/set.png"
-    print(img_rise)
-    print(img_set)
+    print("img_rise:",img_rise)
+    print("img_set:",img_set)
 
     # 处理图片
     report_rise = process_image(img_rise)
     report_set = process_image(img_set)
-    # report_set = report_rise  # 调试
 
     # 处理结果
     process_report(report_rise, report_set)

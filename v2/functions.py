@@ -159,7 +159,7 @@ def split_image(image_filepath):
     im = Image.open(image_filepath)
     # 获取图片的宽度和高度
     img_size = im.size
-    print(img_size)
+    print("img_size:",img_size)
 
     # (1385,400-78)  到(1626,652-78)
     xy1 = (1385, 400 - 78)

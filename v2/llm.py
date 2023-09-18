@@ -15,7 +15,7 @@ class SunsetReport(BaseModel):
     time: str = Field(description="报告中的时间")
     phase: str = Field(description="报告中的时间是属于日出还是日落")
     # phase: PhaseEnum = Field(description="根据time判断是日出还是日落，12点之前是日出，12点之后是日落")
-    aod550: float = Field(description="报告中的字段：AOD-550")
+    # aod550: float = Field(description="报告中的字段：AOD-550")
     quality: float = Field(description="报告中的字段：质量（不含AOD)")
     quality_report: str = Field(description="根据quality总结今天的火烧云质量")
 
@@ -59,9 +59,9 @@ def get_llm_quality_report(ocr_content):
     report = ocr_content
 
     output = llm_chain.run(report)
-    print("output----")
+    print("output-----------------start")
     print(output)
-    print("output----")
+    print("output-----------------end")
 
     report = parser.parse(output)
     return report
