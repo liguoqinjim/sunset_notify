@@ -62,16 +62,6 @@ jobs:
         working-directory: ./v2
         id: verify_diff
         run: |
-          pwd
-          echo "01"
-          ls -al records
-          echo "02"
-          ls -al records/images
-          echo "03"
-          ls -al records/json
-          git diff --quiet records
-          git diff --quiet records/images
-          git diff --quiet records/json
           git diff --quiet records || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Commit files
