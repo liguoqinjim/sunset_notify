@@ -143,22 +143,22 @@ def download_sunset_image(rise=True, save_dir="temp"):
     payload = {}
     headers = {
         # "Connection": "keep-alive",
-        # "sec-ch-ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
-        # "sec-ch-ua-mobile": "?0",
-        # "sec-ch-ua-platform": '"macOS"',
-        # "Upgrade-Insecure-Requests": "1",
+        "sec-ch-ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"macOS"',
+        "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        # "Sec-Fetch-Site": "none",
-        # "Sec-Fetch-Mode": "navigate",
-        # "Sec-Fetch-User": "?1",
-        # "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "zh-CN,zh;q=0.9",
     }
 
     # response = requests.request("GET", target_url, headers=headers, data=payload)
-    response = request_with_retry(target_url, headers, payload, timeout=10, max_retries=3, retry_interval=5)
+    response = request_with_retry(target_url, headers, payload, timeout=20, max_retries=3, retry_interval=5)
 
     # 保存为图片
     if not os.path.exists(save_dir):

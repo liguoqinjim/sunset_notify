@@ -37,6 +37,9 @@ jobs:
         working-directory: ./v1
         run: pip install -r requirements.txt
 
+      - name: 获得当前IP
+        run: curl cip.cc
+        
       - name: 修改日期
         working-directory: ./v1
         run: python change_date.py
