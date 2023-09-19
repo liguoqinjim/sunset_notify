@@ -5,8 +5,28 @@ import requests
 import os
 import base64
 import urllib
+import time
 from PIL import Image
 
+def request_with_retry(target_url, headers, payload, timeout=10, max_retries=3, retry_interval=5):
+    """
+    发送带有超时和重试的 HTTP 请求
+    :param target_url: 请求的 URL
+    :param headers: 请求头
+    :param payload: 请求体
+    :param timeout: 超时时间，单位为秒
+    :param max_retries: 最大重试次数
+    :param retry_interval: 重试间隔时间，单位为秒
+    :return: HTTP 响应
+    """
+    for i in range(max_retries):
+        try:
+            response = requests.request("GET", target_url, headers=headers, data=payload, timeout=timeout)
+            return response
+        except requests.exceptions.Timeout:
+            print(f"请求超时，正在进行第 {i+1} 次重试...")
+            time.sleep(retry_interval)
+    raise requests.exceptions.Timeout(f"请求超时，已重试 {max_retries} 次")
 
 def send_msg_q_wechat(hook_url, content):
     try:
@@ -137,7 +157,8 @@ def download_sunset_image(rise=True, save_dir="temp"):
         "Accept-Language": "zh-CN,zh;q=0.9",
     }
 
-    response = requests.request("GET", target_url, headers=headers, data=payload)
+    # response = requests.request("GET", target_url, headers=headers, data=payload)
+    response = request_with_retry(target_url, headers, payload, timeout=10, max_retries=3, retry_interval=5)
 
     # 保存为图片
     if not os.path.exists(save_dir):
