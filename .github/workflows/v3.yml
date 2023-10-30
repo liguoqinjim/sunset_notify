@@ -1,0 +1,79 @@
+name: "采集火烧云预测&通知v3"
+# run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: 
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+  schedule:
+    # 每天更新两次，分别在8:30-10:30以及20:30-22:30更新
+    - cron: '0 3,15 * * *' #github action的时区不是北京时间，所有都减去8
+
+permissions: write-all # {{secrets.GITHUB_TOKEN}}的权限
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 打印当前时间
+        run: date
+
+      - name: 检查分支
+        uses: actions/checkout@v3
+
+      - name: 设置时区
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: "Asia/Shanghai"
+          timezoneMacos: "Asia/Shanghai"
+          timezoneWindows: "Shanghai Standard Time"
+
+      - name: 打印当前时间
+        run: date
+
+      - name: 安装python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'  
+
+      - name: 打印当前目录
+        working-directory: ./v3
+        run: pwd
+
+      - name: 安装依赖
+        working-directory: ./v3
+        run: pip install -r requirements.txt
+
+      - name: 获得当前IP
+        run: curl cip.cc
+
+      - name: 采集&通知
+        working-directory: ./v3
+        env:
+          BAIDU_API_KEY: ${{ secrets.BAIDU_API_KEY }} # 百度api key
+          BAIDU_SECRET_KEY: ${{ secrets.BAIDU_SECRET_KEY }} # 百度secret key
+          WX_TOKEN: ${{ secrets.WX_TOKEN }} # 微信通知token
+          # WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }} # 天气api key
+        run: python main.py "$BAIDU_API_KEY" "$BAIDU_SECRET_KEY" "$WX_TOKEN"
+      
+      - name: 判断是否有修改
+        working-directory: ./v3
+        id: verify_diff
+        # git diff --quiet records || echo "changed=true" >> $GITHUB_OUTPUT
+        # git diff只对git add之后的文件有效
+        run: |
+          if git status --porcelain records/ | grep "^??" > /dev/null; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit files
+        working-directory: ./v3
+        if: steps.verify_diff.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add records/images/*.webp
+          git commit -m "预测记录更新v3"
+
+      - name: 推送记录到github
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
