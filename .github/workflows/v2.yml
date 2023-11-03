@@ -50,7 +50,8 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: 获得当前IP
-        run: curl cip.cc
+        # run: curl cip.cc
+        run: curl http://httpbin.liguoqinjim.cn/ip
 
       - name: 采集&通知
         working-directory: ./v2
