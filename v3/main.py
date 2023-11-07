@@ -60,10 +60,13 @@ def run():
     """
     获得火烧云数据
     """
+    # 获得图片url
+    img_rise_url ,img_set_url = get_pic_url()
+
     # 下载日落日出图片
-    img_rise = download_sunset_image(rise=True,save_dir="temp")
+    img_rise = download_sunset_image(img_rise_url,rise=True,save_dir="temp")
     time.sleep(1)
-    img_set = download_sunset_image(rise=False,save_dir="temp")
+    img_set = download_sunset_image(img_set_url,rise=False,save_dir="temp")
 
     print("img_rise:",img_rise)
     print("img_set:",img_set)

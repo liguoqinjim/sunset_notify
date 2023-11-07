@@ -8,6 +8,7 @@ import hashlib
 import urllib
 import time
 from PIL import Image
+from bs4 import BeautifulSoup
 
 def request_with_retry(target_url, headers, payload, timeout=10, max_retries=3, retry_interval=5):
     """
@@ -163,15 +164,49 @@ def _baidu_ocr_content_wrap(ocr_result):
 
     return full_text
 
+def get_pic_url():
+    target_url = (
+        "https://sunsetbot.top/"
+    )
 
-def download_sunset_image(rise=True, save_dir="temp"):
+    payload = {}
+    headers = {
+        # "Connection": "keep-alive",
+        "sec-ch-ua": '"Chromium";v="118", "Google Chrome";v="118", "Not=A?Brand";v="99"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"macOS"',
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+    }
+
+    # response = requests.request("GET", target_url, headers=headers, data=payload)
+    response = request_with_retry(target_url, headers, payload, timeout=20, max_retries=3, retry_interval=5)
+
+    # 从response的HTML中，找出图片的URL
+    soup = BeautifulSoup(response.text, 'html.parser')
+    img_rise = soup.select_one('#rise_img_src')['src']
+    img_rise = "https://sunsetbot.top" + img_rise
+
+    img_set = soup.select_one('#set_img_src')['src']
+    img_set = "https://sunsetbot.top" + img_set
+    print(img_rise,img_set)
+    return img_rise,img_set
+
+
+def download_sunset_image(image_url,rise=True, save_dir="temp"):
     """
     下载图片
     """
-
-    target_url = (
-        "https://sunsetbot.top/static/media/cross_section/%E4%B8%8A%E6%B5%B7_rise.png"
-    )
+    # target_url = (
+    #     "https://sunsetbot.top/static/media/cross_section/%E4%B8%8A%E6%B5%B7_rise.png"
+    # )
     filename = "rise.png"
     if not rise:
         target_url = "https://sunsetbot.top/static/media/cross_section/%E4%B8%8A%E6%B5%B7_set.png"
@@ -195,7 +230,7 @@ def download_sunset_image(rise=True, save_dir="temp"):
     }
 
     # response = requests.request("GET", target_url, headers=headers, data=payload)
-    response = request_with_retry(target_url, headers, payload, timeout=20, max_retries=3, retry_interval=5)
+    response = request_with_retry(image_url, headers, payload, timeout=20, max_retries=3, retry_interval=5)
 
     # 保存为图片
     if not os.path.exists(save_dir):
