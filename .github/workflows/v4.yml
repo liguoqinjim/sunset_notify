@@ -1,4 +1,4 @@
-name: "采集火烧云预测&通知v3"
+name: "采集火烧云预测&通知v4"
 # run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: 
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
