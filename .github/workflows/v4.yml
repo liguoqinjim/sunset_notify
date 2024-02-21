@@ -1,0 +1,56 @@
+name: "采集火烧云预测&通知v3"
+# run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: 
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+  schedule:
+    # 每天更新4次，大更新在7：30-8：30以及19：30-20：30，小更新（仅中东部城市）出现在13：30和1：30。
+    - cron: '50 0,5,12,17 * * *' #github action的时区不是北京时间，所有都减去8
+
+permissions: write-all # {{secrets.GITHUB_TOKEN}}的权限
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 打印当前时间
+        run: date
+
+      - name: 检查分支
+        uses: actions/checkout@v3
+
+      - name: 设置时区
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: "Asia/Shanghai"
+          timezoneMacos: "Asia/Shanghai"
+          timezoneWindows: "Shanghai Standard Time"
+
+      - name: 打印当前时间
+        run: date
+
+      - name: 安装python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 打印当前目录
+        working-directory: ./v4
+        run: pwd
+
+      - name: 安装依赖
+        working-directory: ./v4
+        run: pip install -r requirements.txt
+
+      - name: 获得当前IP
+        # run: curl cip.cc
+        run: curl http://httpbin.liguoqinjim.cn/ip
+
+      - name: 采集&通知
+        working-directory: ./v4
+        env:
+          # BAIDU_API_KEY: ${{ secrets.BAIDU_API_KEY }} # 百度api key
+          # BAIDU_SECRET_KEY: ${{ secrets.BAIDU_SECRET_KEY }} # 百度secret key
+          WX_TOKEN: ${{ secrets.WX_TOKEN }} # 微信通知token
+          # WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }} # 天气api key
+        run: python main.py "$WX_TOKEN"
+

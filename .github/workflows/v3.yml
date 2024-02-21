@@ -4,7 +4,7 @@ on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
   schedule:
     # 每天更新两次，分别在8:30-10:30以及20:30-22:30更新
-    - cron: '0 3,15 * * *' #github action的时区不是北京时间，所有都减去8
+    # - cron: '0 3,15 * * *' #github action的时区不是北京时间，所有都减去8
 
 permissions: write-all # {{secrets.GITHUB_TOKEN}}的权限
 
