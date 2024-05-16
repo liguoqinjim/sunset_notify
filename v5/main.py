@@ -56,12 +56,20 @@ def process_report(report_rise, report_set):
     send_wechat_work_img(hook_url, report_set)
 
 
-def get_info_from_api(rise=True):
+def get_info_from_api(event="rise_1"):
+    events_dict = {
+        "rise_1": "今日日出",
+        "rise_2": "明日日出",
+        "set_1": "今日日落",
+        "set_2": "明日日落",
+    }
+    if event not in events_dict:
+        raise ValueError("event参数错误")
+
     # 获取API返回
-    if rise:
-        url = "https://sunsetbot.top/?query_city=&times=None&event=rise"
-    else:
-        url = "https://sunsetbot.top/?query_city=&times=None&event=set"
+    # url = "https://sunsetbot.top/?query_city=&event_date=None&event=rise_2&times=None&intend=select_city"
+    url = f"https://sunsetbot.top/?query_city=&event_date=None&event={event}&times=None&intend=select_city"
+
     payload = {}
 
     headers = {
@@ -106,8 +114,11 @@ def get_info_from_api(rise=True):
         p_contents = [td.find("p").text.strip() for td in td_tags if td.find("p")]
         print(p_contents)
 
+        # 单独处理p_contents的第一个元素，因为它是时间。当前的格式为：`2024-05-1704:58:24`，需要在日期和时间之间加一个空格
+        p_contents[0] = p_contents[0][:10] + " " + p_contents[0][10:]
+
         # 发送微信通知
-        title = "日出:" if rise else "日落:"
+        title = f"{events_dict[event]}:\n"
         msg = ""
 
         for i,content in enumerate(first_p_contents):
@@ -121,13 +132,32 @@ def get_info_from_api(rise=True):
     else:
         print("没有找到至少两个 <tr> 标签")
 
+
+def is_before_sunrise():
+    """
+    判断现在是否为日出之前，也就是凌晨
+    """
+    now = datetime.now()
+    sunrise_time = datetime(now.year, now.month, now.day, 5, 0, 0)  # 设置日出时间为早上5点
+    return now.hour < sunrise_time.hour
+
+def get_info():
+    before_sunrise = is_before_sunrise()
+
+    if before_sunrise: # 今日日出和今日日落
+        get_info_from_api(event="rise_1")
+        time.sleep(2)
+        get_info_from_api(event="set_1")
+    else: # 今日日落和明日日出
+        get_info_from_api(event="set_1")
+        time.sleep(2)
+        get_info_from_api(event="rise_2")
+
 def run():
     """
     获得火烧云数据
     """
-    get_info_from_api(rise=True)
-    time.sleep(2)
-    get_info_from_api(rise=False)
+    get_info()
 
 
 if __name__ == "__main__":
