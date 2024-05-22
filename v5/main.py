@@ -141,17 +141,31 @@ def is_before_sunrise():
     sunrise_time = datetime(now.year, now.month, now.day, 5, 0, 0)  # 设置日出时间为早上5点
     return now.hour < sunrise_time.hour
 
+def is_after_sunset():
+    """
+    判断现在是否为日落之后，也就是晚上
+    """
+    now = datetime.now()
+    sunset_time = datetime(now.year, now.month, now.day, 20, 0, 0)  # 设置日落时间为晚上7点
+    return now.hour > sunset_time.hour
+
 def get_info():
     before_sunrise = is_before_sunrise()
+    after_sunset = is_after_sunset()
 
     if before_sunrise: # 今日日出和今日日落
         get_info_from_api(event="rise_1")
         time.sleep(2)
         get_info_from_api(event="set_1")
-    else: # 今日日落和明日日出
-        get_info_from_api(event="set_1")
-        time.sleep(2)
-        get_info_from_api(event="rise_2")
+    else: 
+        if not after_sunset: # 今日日落和明日日出
+            get_info_from_api(event="set_1")
+            time.sleep(2)
+            get_info_from_api(event="rise_2")
+        else: # 日落之后，明日日出和明日日落
+            get_info_from_api(event="rise_2")
+            time.sleep(2)
+            get_info_from_api(event="set_2")
 
 def run():
     """
