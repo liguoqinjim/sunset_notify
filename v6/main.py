@@ -91,46 +91,16 @@ def get_info_from_api(event="rise_1"):
     response = requests.request("GET", url, headers=headers, data=payload)
 
     data = response.json()
+    event_time = data['tb_event_time'].replace("<br>", " ")
+    quality = data['tb_quality'].replace("<br>", " ")
+    aod = data['tb_aod'].replace("<br>", " ")
 
-    html_content = data["table_content"]
-    soup = BeautifulSoup(html_content, "html.parser")
+    # 发送微信通知
+    title = f"{events_dict[event]}:\n"
+    msg = f"北京时间：{event_time}\n火烧云鲜艳度：{quality}\n大气透明度：{aod}"
 
-    # 找到所有的 <tr> 标签
-    tr_tags = soup.find_all("tr")
-
-    # 如果找到了至少两个 <tr> 标签
-    if len(tr_tags) == 2:
-        # 获取元数据内容
-        first_tr = tr_tags[0]
-        first_tds = first_tr.find_all("td")
-        first_p_contents = [td.find("p").text.strip() for td in first_tds if td.find("p")]
-        print(first_p_contents)
-
-        # 获取第二个 <tr> 标签
-        second_tr = tr_tags[1]
-        # 找到所有的 <td> 标签
-        td_tags = second_tr.find_all("td")
-        # 对每个 <td> 标签，找到其子元素 <p> 的内容
-        p_contents = [td.find("p").text.strip() for td in td_tags if td.find("p")]
-        print(p_contents)
-
-        # 单独处理p_contents的第一个元素，因为它是时间。当前的格式为：`2024-05-1704:58:24`，需要在日期和时间之间加一个空格
-        p_contents[0] = p_contents[0][:10] + " " + p_contents[0][10:]
-
-        # 发送微信通知
-        title = f"{events_dict[event]}:\n"
-        msg = ""
-
-        for i,content in enumerate(first_p_contents):
-            if i == len(p_contents) - 1:
-                continue
-
-            msg += f"{content}:{p_contents[i]}\n"
-
-        content = f"{title}\n{msg}"
-        send_msg_q_wechat(hook_url, content)
-    else:
-        print("没有找到至少两个 <tr> 标签")
+    content = f"{title}\n{msg}"
+    send_msg_q_wechat(hook_url, content)
 
 
 def is_before_sunrise():
@@ -141,6 +111,7 @@ def is_before_sunrise():
     sunrise_time = datetime(now.year, now.month, now.day, 5, 0, 0)  # 设置日出时间为早上5点
     return now.hour < sunrise_time.hour
 
+
 def is_after_sunset():
     """
     判断现在是否为日落之后，也就是晚上
@@ -149,23 +120,25 @@ def is_after_sunset():
     sunset_time = datetime(now.year, now.month, now.day, 20, 0, 0)  # 设置日落时间为晚上7点
     return now.hour > sunset_time.hour
 
+
 def get_info():
     before_sunrise = is_before_sunrise()
     after_sunset = is_after_sunset()
 
-    if before_sunrise: # 今日日出和今日日落
+    if before_sunrise:  # 今日日出和今日日落
         get_info_from_api(event="rise_1")
         time.sleep(2)
         get_info_from_api(event="set_1")
-    else: 
-        if not after_sunset: # 今日日落和明日日出
+    else:
+        if not after_sunset:  # 今日日落和明日日出
             get_info_from_api(event="set_1")
             time.sleep(2)
             get_info_from_api(event="rise_2")
-        else: # 日落之后，明日日出和明日日落
+        else:  # 日落之后，明日日出和明日日落
             get_info_from_api(event="rise_2")
             time.sleep(2)
             get_info_from_api(event="set_2")
+
 
 def run():
     """
