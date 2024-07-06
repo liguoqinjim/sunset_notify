@@ -8,7 +8,7 @@ import hashlib
 import urllib
 import time
 from PIL import Image
-from bs4 import BeautifulSoup
+
 
 def request_with_retry(target_url, headers, payload, timeout=10, max_retries=3, retry_interval=5):
     """
@@ -26,9 +26,10 @@ def request_with_retry(target_url, headers, payload, timeout=10, max_retries=3, 
             response = requests.request("GET", target_url, headers=headers, data=payload, timeout=timeout)
             return response
         except requests.exceptions.Timeout:
-            print(f"请求超时，正在进行第 {i+1} 次重试...")
+            print(f"请求超时，正在进行第 {i + 1} 次重试...")
             time.sleep(retry_interval)
     raise requests.exceptions.Timeout(f"请求超时，已重试 {max_retries} 次")
+
 
 def send_msg_q_wechat(hook_url, content):
     try:
@@ -39,6 +40,7 @@ def send_msg_q_wechat(hook_url, content):
     except Exception as e:
         print(f"发送企业微信失败:{e}")
         print(traceback.format_exc())
+
 
 class MyEncoder(json.JSONEncoder):
     """
@@ -55,8 +57,9 @@ class MyEncoder(json.JSONEncoder):
             return str(obj, encoding='utf-8')
         return json.JSONEncoder.default(self, obj)
 
+
 # 企业微信发送图片
-def send_wechat_work_img(wechat_webhook_url,file_path):
+def send_wechat_work_img(wechat_webhook_url, file_path):
     """
     企业微信发送图片
     :param file_path:       本地图片的位置
@@ -125,8 +128,8 @@ def get_file_content_as_base64(path, urlencoded=False):
 
 def baidu_ocr(image_filepath, api_key, secret_key):
     url = (
-        "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate?access_token="
-        + _baidu_get_access_token(api_key, secret_key)
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate?access_token="
+            + _baidu_get_access_token(api_key, secret_key)
     )
 
     payload = get_file_content_as_base64(image_filepath, True)
@@ -164,6 +167,7 @@ def _baidu_ocr_content_wrap(ocr_result):
 
     return full_text
 
+
 def get_pic_url():
     target_url = (
         "https://sunsetbot.top/"
@@ -196,11 +200,11 @@ def get_pic_url():
 
     img_set = soup.select_one('#set_img_src')['src']
     img_set = "https://sunsetbot.top" + img_set
-    print(img_rise,img_set)
-    return img_rise,img_set
+    print(img_rise, img_set)
+    return img_rise, img_set
 
 
-def download_sunset_image(image_url,rise=True, save_dir="temp"):
+def download_sunset_image(image_url, rise=True, save_dir="temp"):
     """
     下载图片
     """
@@ -242,6 +246,7 @@ def download_sunset_image(image_url,rise=True, save_dir="temp"):
 
     return _filepath
 
+
 def split_image(image_filepath):
     """
     切割图片
@@ -252,7 +257,7 @@ def split_image(image_filepath):
     im = Image.open(image_filepath)
     # 获取图片的宽度和高度
     img_size = im.size
-    print("img_size:",img_size)
+    print("img_size:", img_size)
 
     # (1385,400-78)  到(1626,652-78)
     xy1 = (1385, 400 - 78)

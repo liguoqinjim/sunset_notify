@@ -3,7 +3,6 @@ import time
 from datetime import datetime
 import sys
 import requests
-from bs4 import BeautifulSoup
 
 # 读取参数
 wx_token = sys.argv[1]
