@@ -6,6 +6,9 @@ sky aflame(red sky ) sunset notification
 |v1|Retrieve information through Weibo crawler.| 
 |v2|Obtain information via image processing, employing LangChain technology|
 |v3|Update the method of image acquisition|
+|v4|Update code due to website changes|
+|v5|Update code due to website changes|
+|v6|Update code due to website changes|
 
 
 ## Project Objective
@@ -52,4 +55,4 @@ Don't hesitate to ask questions in the project's issue tracker.
 ## TODO
 - [ ] use docker to run
 - [ ] use pm2 to run by schedule
-- [ ] train a model to ocr instead of using api
+- [x] train a model to ocr instead of using api
