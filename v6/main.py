@@ -87,7 +87,7 @@ def get_info_from_api(event="rise_1"):
         "sec-ch-ua-platform": '"macOS"',
     }
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+    response = requests.request("GET", url, headers=headers, data=payload,timeout=10)
 
     data = response.json()
     event_time = data['tb_event_time'].replace("<br>", " ")

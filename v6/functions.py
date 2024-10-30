@@ -34,7 +34,7 @@ def request_with_retry(target_url, headers, payload, timeout=10, max_retries=3, 
 def send_msg_q_wechat(hook_url, content):
     try:
         data = {"msgtype": "text", "text": {"content": content}}
-        r = requests.post(hook_url, data=json.dumps(data), timeout=10)
+        r = requests.post(hook_url, data=json.dumps(data), timeout=5)
         print(f"调用企业微信接口返回： {r.text}")
         print("成功发送企业微信")
     except Exception as e:
